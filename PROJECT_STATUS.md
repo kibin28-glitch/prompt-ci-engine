@@ -39,16 +39,16 @@
 - `lib/supabase.ts` — 서버용 Supabase 클라이언트 (`NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`)
 - `lib/rateLimit.ts` — `checkRateLimit(token)`, 24시간 내 100건 이상이면 false
 - `supabase/migrations/0001_runs.sql` — `runs` 테이블(id uuid, token text, created_at, payload jsonb) + 인덱스
-- CLI 쪽: `src/upload/uploadResult.ts` (신규) + `src/cli.ts`/`src/commands/run.ts`에 `--upload` 옵션 추가 — `PROMPTCI_DASHBOARD_URL`, `PROMPTCI_TOKEN` 환경변수 사용, 토큰 없으면 랜덤 생성 후 안내 출력. **주의: CLI 쪽 이 변경사항은 아직 git commit 안 됨 — 검토 후 커밋 필요.**
+- CLI 쪽: `src/upload/uploadResult.ts` (신규) + `src/cli.ts`/`src/commands/run.ts`에 `--upload` 옵션 추가 — `PROMPTCI_DASHBOARD_URL`, `PROMPTCI_TOKEN` 환경변수 사용, 토큰 없으면 랜덤 생성 후 안내 출력. (commit 완료)
 
 검증 완료: 두 저장소 모두 `npm run build`/타입체크 통과. Supabase 자격증명 없이도 빌드되도록 리포트 페이지/API 라우트에 `export const dynamic = "force-dynamic"` 적용.
 
-**다음 할 일 (사용자가 직접 해야 함, 3단계 실제 코드 작성은 끝났고 이제부터는 설정/배포 단계)**:
-1. supabase.com에서 프로젝트 생성 → SQL Editor에서 `prompt-ci-dashboard/supabase/migrations/0001_runs.sql` 실행
-2. `prompt-ci-dashboard/.env.local`에 `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` 설정 (Vercel 배포 시 같은 값을 환경변수로도 등록)
-3. `prompt-ci-dashboard` 리포지토리를 GitHub에 푸시 후 Vercel에 import → 배포, 배포 URL 확보
+**다음 할 일 (사용자가 직접 해야 함 — 계정/브라우저 로그인이 필요한 단계라 AI가 대신 못 함. gh/vercel/supabase CLI가 로컬에 설치 안 되어 있음도 확인됨)**:
+1. supabase.com에서 프로젝트 생성 → SQL Editor에서 `prompt-ci-dashboard/supabase/migrations/0001_runs.sql` 실행 → Settings → API에서 Project URL, `service_role` 키 확보
+2. `prompt-ci-dashboard/.env.local`에 `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` 설정
+3. 배포: `cd prompt-ci-dashboard && npx vercel --prod` (GitHub push 없이도 로컬에서 바로 배포 가능, 브라우저 로그인 1회 필요) → 배포 시 같은 환경변수 2개를 Vercel 프로젝트 설정에도 등록
 4. `prompt-ci-engine` 쪽에서 `PROMPTCI_DASHBOARD_URL=<배포 URL>` 설정 후 `promptci run --upload`로 end-to-end 테스트
-5. (선택) CLI 쪽 uncommitted 변경사항 검토 후 커밋, `app/page.tsx`의 placeholder GitHub 링크(`href="#"`)를 실제 repo 주소로 교체
+5. (선택) `app/page.tsx`의 placeholder GitHub 링크(`href="#"`)를 실제 repo 주소로 교체 — GitHub에 올릴 경우
 
 ## 참고
 - 실제 OpenAI API 키가 있어야 CLI의 `run` 명령을 끝까지 테스트 가능
