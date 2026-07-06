@@ -1,0 +1,6 @@
+model: gpt-4o-mini
+threshold: 0.7
+prompts:
+  - name: greeting
+    file: examples/prompts/greeting.txt
+    testcases: examples/testcases/greeting.cases.json

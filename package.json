@@ -1,0 +1,25 @@
+{
+  "name": "prompt-ci-engine",
+  "version": "0.1.0",
+  "description": "Prompt/model regression testing CLI",
+  "type": "module",
+  "bin": {
+    "promptci": "./dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "dotenv": "^16.4.0",
+    "js-yaml": "^4.1.0",
+    "openai": "^4.52.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.12.0",
+    "tsx": "^4.15.0",
+    "typescript": "^5.4.0"
+  }
+}
