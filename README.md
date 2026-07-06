@@ -5,13 +5,13 @@ Regression testing for your LLM prompts. When you change a prompt or swap models
 ## Install
 
 ```bash
-npx promptci init
+npx @kibin28-glitch/promptci init
 ```
 
 Or install globally:
 
 ```bash
-npm install -g promptci
+npm install -g @kibin28-glitch/promptci
 ```
 
 ## Usage

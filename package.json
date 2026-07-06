@@ -1,5 +1,5 @@
 {
-  "name": "promptci",
+  "name": "@kibin28-glitch/promptci",
   "version": "0.1.0",
   "description": "Regression testing CLI for LLM prompts — catch quality regressions before they ship",
   "type": "module",
