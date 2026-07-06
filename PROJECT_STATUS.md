@@ -55,10 +55,18 @@
 - `promptci run --upload` 실행 → gpt-4o-mini 실제 호출 → 케이스 PASS → 대시보드 업로드 → 리포트 URL 확인 (HTTP 200)
 - CLI → 웹 대시보드 전체 파이프라인이 실사용 조건에서 정상 동작함을 확인
 
+### 5. GitHub 공개 + npm 배포 완료 (2026-07-07)
+- `prompt-ci-engine` → https://github.com/kibin28-glitch/prompt-ci-engine (public)
+- `prompt-ci-dashboard` → https://github.com/kibin28-glitch/prompt-ci-dashboard (public)
+- npm 패키지명 `promptci`는 기존 `prompt`/`prompts`와 유사하다는 이유로 npm이 거부 → `@kibin28-glitch/promptci`로 스코프 변경 후 배포 성공
+- 설치: `npx @kibin28-glitch/promptci init` (동작 확인됨 — `--help` 정상 출력)
+- 랜딩 페이지(`app/page.tsx`)의 GitHub/npm 링크 및 설치 안내 문구 실제 주소로 교체, Vercel 재배포 완료
+- 각 저장소에 사용자용 README 작성 완료
+
 **다음 할 일 (선택)**:
-1. `app/page.tsx`의 placeholder GitHub 링크(`href="#"`)를 실제 repo 주소로 교체 — GitHub에 올릴 경우
-2. 실제 사용할 프롬프트/테스트케이스를 `examples/` 대신 프로젝트에 맞게 추가
-3. 로그인/GitHub App 연동 등 2단계 기능 (PROJECT_STATUS.md 상단 로드맵 참고)
+1. 실제 사용할 프롬프트/테스트케이스를 `examples/` 대신 프로젝트에 맞게 추가
+2. 로그인/GitHub App 연동 등 2단계 기능 (PROJECT_STATUS.md 상단 로드맵 참고)
+3. npm 계정 2FA 복구 코드(recovery codes)를 대화 중 노출한 적 있어 재발급 권장
 
 ## 참고
-- MVP 파이프라인(CLI 실행 → 웹 업로드 → 공유 URL로 조회) 전체가 실사용 조건에서 검증 완료됨
+- MVP 전체 사이클(로컬 개발 → GitHub 공개 → npm 배포 → 웹 대시보드 배포 → 실사용 테스트)이 실사용 조건에서 검증 완료됨
