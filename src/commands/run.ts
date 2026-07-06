@@ -5,9 +5,10 @@ import { loadTestCases } from "../testcases/loadTestCases.js";
 import { OpenAIProvider } from "../providers/openai.js";
 import { runRegression } from "../runner/runRegression.js";
 import { formatConsole } from "../report/formatConsole.js";
+import { uploadResult } from "../upload/uploadResult.js";
 import type { RunResult } from "../types.js";
 
-export async function runCommand(): Promise<void> {
+export async function runCommand(options: { upload?: boolean } = {}): Promise<void> {
   const config = loadConfig();
   const provider = new OpenAIProvider();
 
@@ -43,6 +44,17 @@ export async function runCommand(): Promise<void> {
 
   mkdirSync("tests/results", { recursive: true });
   writeFileSync("tests/results/latest.json", JSON.stringify(results, null, 2));
+
+  if (options.upload) {
+    try {
+      const { url } = await uploadResult(results);
+      console.log(`\nReport: ${url}`);
+    } catch (err) {
+      console.warn(
+        `Warning: upload failed (${err instanceof Error ? err.message : err}). Local results saved to tests/results/latest.json.`,
+      );
+    }
+  }
 
   if (results.some((r) => !r.passed)) {
     process.exitCode = 1;

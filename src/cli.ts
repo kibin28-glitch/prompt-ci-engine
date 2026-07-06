@@ -22,9 +22,10 @@ program
 program
   .command("run")
   .description("Run regression tests against the saved baseline")
-  .action(async () => {
+  .option("--upload", "Upload results to the dashboard and print a shareable report URL")
+  .action(async (options: { upload?: boolean }) => {
     try {
-      await runCommand();
+      await runCommand({ upload: options.upload === true });
     } catch (err) {
       console.error(err instanceof Error ? err.message : err);
       process.exitCode = 1;

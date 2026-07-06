@@ -27,28 +27,29 @@
 
 검증 완료: 타입체크 통과, init/snapshot 명령 정상 동작, API 키 없을 때 에러 메시지 정상 출력. 실제 OpenAI 호출까지의 end-to-end는 API 키 필요해서 미검증 (사용자가 `.env`에 키 넣고 `npm run dev -- run`으로 직접 테스트 필요).
 
-### 2. 웹 대시보드 (설계 완료, 코드 작성 전 — 다음 단계는 💻 Senior Developer)
+### 2. 웹 대시보드 (💻 Senior Developer 코드 작성 완료, 로컬 빌드/타입체크 통과 — 배포 전)
 목적: CLI 실행 결과를 웹에 업로드해서 공유 가능한 URL(`/r/{runId}`)로 볼 수 있게 함. 로그인 없이 시작 (2단계에서 로그인/GitHub App 연동 추가 예정).
 
-확정된 설계:
-- 신규 저장소 `prompt-ci-dashboard` (Next.js App Router + Supabase + Vercel 배포)
-- DB 스키마: `runs` 테이블 (id uuid, token text, created_at, payload jsonb)
-- `token`은 진짜 인증이 아니라 업로드 출처 구분/rate-limit용 (24시간 100건 제한, SQL count로 체크)
-- 데이터 흐름: CLI `promptci run --upload` → `POST /api/runs` → DB insert → 공유 URL 반환 → CLI가 콘솔에 URL 출력
-- 폴더 구조:
-  ```
-  prompt-ci-dashboard/
-  ├── app/page.tsx                  # 랜딩
-  ├── app/r/[runId]/page.tsx        # 리포트 조회 페이지
-  ├── app/api/runs/route.ts         # 업로드 API
-  ├── lib/supabase.ts
-  ├── lib/rateLimit.ts
-  └── supabase/migrations/0001_runs.sql
-  ```
-  CLI 쪽에는 `src/upload/uploadResult.ts` + `run.ts`에 `--upload` 옵션 추가 필요
+위치: `~/development/prompt-ci-dashboard` (독립 git 저장소, 초기 커밋 완료). Next.js 16 App Router + TypeScript + Tailwind + `@supabase/supabase-js`.
 
-**다음 할 일**: Supabase 프로젝트 생성 → 💻 Senior Developer 단계로 위 설계 그대로 코드 작성.
+구현 완료:
+- `app/page.tsx` — 랜딩 페이지
+- `app/r/[runId]/page.tsx` — 리포트 조회 페이지 (동적 렌더링, Supabase에서 조회, 없으면 404, pass/fail 배지 + 케이스별 baseline/current/eval 비교, 실패 케이스 빨강/성공 초록 강조)
+- `app/api/runs/route.ts` — 업로드 API (`POST`): token/payload 검증 → rate limit 체크(429) → DB insert → `{ runId }` 반환
+- `lib/supabase.ts` — 서버용 Supabase 클라이언트 (`NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`)
+- `lib/rateLimit.ts` — `checkRateLimit(token)`, 24시간 내 100건 이상이면 false
+- `supabase/migrations/0001_runs.sql` — `runs` 테이블(id uuid, token text, created_at, payload jsonb) + 인덱스
+- CLI 쪽: `src/upload/uploadResult.ts` (신규) + `src/cli.ts`/`src/commands/run.ts`에 `--upload` 옵션 추가 — `PROMPTCI_DASHBOARD_URL`, `PROMPTCI_TOKEN` 환경변수 사용, 토큰 없으면 랜덤 생성 후 안내 출력. **주의: CLI 쪽 이 변경사항은 아직 git commit 안 됨 — 검토 후 커밋 필요.**
+
+검증 완료: 두 저장소 모두 `npm run build`/타입체크 통과. Supabase 자격증명 없이도 빌드되도록 리포트 페이지/API 라우트에 `export const dynamic = "force-dynamic"` 적용.
+
+**다음 할 일 (사용자가 직접 해야 함, 3단계 실제 코드 작성은 끝났고 이제부터는 설정/배포 단계)**:
+1. supabase.com에서 프로젝트 생성 → SQL Editor에서 `prompt-ci-dashboard/supabase/migrations/0001_runs.sql` 실행
+2. `prompt-ci-dashboard/.env.local`에 `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` 설정 (Vercel 배포 시 같은 값을 환경변수로도 등록)
+3. `prompt-ci-dashboard` 리포지토리를 GitHub에 푸시 후 Vercel에 import → 배포, 배포 URL 확보
+4. `prompt-ci-engine` 쪽에서 `PROMPTCI_DASHBOARD_URL=<배포 URL>` 설정 후 `promptci run --upload`로 end-to-end 테스트
+5. (선택) CLI 쪽 uncommitted 변경사항 검토 후 커밋, `app/page.tsx`의 placeholder GitHub 링크(`href="#"`)를 실제 repo 주소로 교체
 
 ## 참고
 - 실제 OpenAI API 키가 있어야 CLI의 `run` 명령을 끝까지 테스트 가능
-- 웹 대시보드 진행하려면 supabase.com에서 무료 프로젝트 하나 미리 만들어두면 좋음
+- 웹 대시보드는 코드는 완성됐지만 Supabase 프로젝트 생성 + 배포는 아직 안 됨 (위 "다음 할 일" 참고)
