@@ -1,14 +1,30 @@
 {
-  "name": "prompt-ci-engine",
+  "name": "promptci",
   "version": "0.1.0",
-  "description": "Prompt/model regression testing CLI",
+  "description": "Regression testing CLI for LLM prompts — catch quality regressions before they ship",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kibin28-glitch/prompt-ci-engine.git"
+  },
+  "homepage": "https://prompt-ci-dashboard.vercel.app",
+  "bugs": {
+    "url": "https://github.com/kibin28-glitch/prompt-ci-engine/issues"
+  },
+  "keywords": ["llm", "prompt", "regression-testing", "ci", "openai", "testing"],
   "bin": {
     "promptci": "./dist/cli.js"
   },
+  "files": [
+    "dist",
+    "examples",
+    "README.md"
+  ],
   "scripts": {
     "dev": "tsx src/cli.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "commander": "^12.0.0",
