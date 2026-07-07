@@ -7,6 +7,16 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
+      # Workaround: this repo's package.json name (@kibin28-glitch/promptci) is the
+      # same as the npm package promptci-action installs via `npx @kibin28-glitch/promptci`.
+      # npm's npx/npm-exec special-cases a bare package name that matches the current
+      # project's own package.json name: it assumes the package is already available
+      # locally and skips fetching from the registry, but it never creates the
+      # node_modules/.bin symlink for the *root* project referencing itself, so the
+      # `promptci` binary ends up missing from PATH ("promptci: command not found").
+      # Pre-installing the published package globally makes npx see it as already
+      # satisfied and run it directly, bypassing the ambiguous local-name match.
+      - run: npm install -g @kibin28-glitch/promptci
       - uses: kibin28-glitch/promptci-action@v1
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
