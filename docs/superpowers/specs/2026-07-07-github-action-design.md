@@ -74,9 +74,13 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
       run: |
         node "${{ github.action_path }}/format-comment.js" tests/results/latest.json /tmp/promptci-stdout.txt > /tmp/promptci-comment.md
-        gh pr comment "${{ github.event.pull_request.number }}" \
-          --body-file /tmp/promptci-comment.md \
-          --edit-last --create-if-none
+        COMMENT_ID=$(gh pr view "${{ github.event.pull_request.number }}" --json comments \
+          --jq '.comments[] | select(.body | contains("<!-- promptci-action -->")) | .id' | head -n 1)
+        if [ -n "$COMMENT_ID" ]; then
+          gh api -X PATCH "repos/${{ github.repository }}/issues/comments/$COMMENT_ID" -F body=@/tmp/promptci-comment.md
+        else
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/promptci-comment.md
+        fi
     - name: Fail if regression found
       if: always() && steps.run.outcome == 'failure'
       shell: bash
@@ -95,7 +99,7 @@ runs:
 📊 [Full report](https://prompt-ci-dashboard.vercel.app/r/xxxx)
 ```
 
-- 첫 줄의 `<!-- promptci-action -->` 마커는 코멘트를 식별하기 위한 용도이며 렌더링되지 않는다 (향후 다른 방식의 upsert가 필요해지면 이 마커로 검색할 수 있음; 지금은 `gh pr comment --edit-last`만으로 충분).
+- 첫 줄의 `<!-- promptci-action -->` 마커로 "Comment on PR" 스텝이 기존 promptci 코멘트를 정확히 찾아낸다 (`gh pr view --json comments --jq`로 마커 포함 코멘트의 ID 조회). 찾으면 `gh api -X PATCH`로 그 코멘트를 갱신하고, 없으면 `gh pr comment`로 새로 만든다. `--edit-last`(마지막으로 단 코멘트를 무조건 수정)는 같은 토큰이 다른 코멘트도 남길 경우 잘못된 코멘트를 수정할 위험이 있어 채택하지 않는다.
 - `promptci-token`이 없으면(익명 실행) "Full report" 줄은 생략한다.
 - 대시보드 업로드 URL은 CLI의 표준출력(`Report: <url>`)이 아니라 `latest.json`에 각 run이 이미 갖고 있는 정보만으로는 얻을 수 없으므로, `promptci run --upload`의 표준출력을 함께 캡처해 그 중 `Report: `로 시작하는 줄을 파싱해 사용한다. (`format-comment.js`는 두 개의 인자를 받는다: `latest.json` 경로, CLI 표준출력 캡처 파일 경로.)
 
