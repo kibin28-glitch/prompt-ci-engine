@@ -347,9 +347,9 @@ tests/results/
 
 - [ ] **Step 2: Add the CI section to `README.md`**
 
-In `/Users/kimkibin/development/prompt-ci-engine/README.md`, insert this new section between `## Environment variables` and `## License`:
+In `/Users/kimkibin/development/prompt-ci-engine/README.md`, insert this new section between `## Environment variables` and `## License`. The exact lines to insert as real file content are between the `--- BEGIN ---` and `--- END ---` markers below (those marker lines themselves are not part of the content — they exist only so this plan document's own Markdown doesn't need a fence-inside-a-fence):
 
-```markdown
+--- BEGIN ---
 ## CI에서 사용하기 (GitHub Actions)
 
 PR마다 자동으로 회귀테스트를 돌리고 결과를 코멘트로 남기려면 [promptci-action](https://github.com/kibin28-glitch/promptci-action)을 사용하세요:
@@ -373,10 +373,7 @@ jobs:
 ```
 
 대시보드에 결과를 올리고 코멘트에 리포트 링크를 포함하려면 `promptci-token` 입력값도 추가하세요 (`/dashboard`에서 발급).
-```
-```
-
-(Note: the outer markdown code fence above is just to show you the edit; when you actually edit `README.md`, insert the inner content — starting at `## CI에서 사용하기` and ending at the `대시보드에 결과를...` line — as real file content, not nested inside another fence.)
+--- END ---
 
 - [ ] **Step 3: Stage and commit**
 
