@@ -55,6 +55,30 @@ Test cases support either an `expectedContains` substring check or an LLM-judge 
 | `PROMPTCI_DASHBOARD_URL` | Dashboard to upload results to (`--upload`) |
 | `PROMPTCI_TOKEN` | Stable token for rate-limit tracking on uploads |
 
+## CI에서 사용하기 (GitHub Actions)
+
+PR마다 자동으로 회귀테스트를 돌리고 결과를 코멘트로 남기려면 [promptci-action](https://github.com/kibin28-glitch/promptci-action)을 사용하세요:
+
+1. `promptci snapshot`으로 만든 `.promptci/baseline`을 git에 커밋하세요 — CI 러너는 로컬 baseline에 접근할 수 없습니다.
+2. 저장소 Settings → Secrets and variables → Actions에 `OPENAI_API_KEY`를 등록하세요.
+3. `.github/workflows/promptci.yml`을 추가하세요:
+
+```yaml
+on: [pull_request]
+jobs:
+  promptci:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kibin28-glitch/promptci-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+```
+
+대시보드에 결과를 올리고 코멘트에 리포트 링크를 포함하려면 `promptci-token` 입력값도 추가하세요 (`/dashboard`에서 발급).
+
 ## License
 
 MIT
