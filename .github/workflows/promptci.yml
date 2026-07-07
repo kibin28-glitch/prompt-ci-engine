@@ -1,0 +1,12 @@
+# .github/workflows/promptci.yml
+on: [pull_request]
+jobs:
+  promptci:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kibin28-glitch/promptci-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
