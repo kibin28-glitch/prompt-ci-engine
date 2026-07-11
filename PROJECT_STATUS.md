@@ -51,6 +51,7 @@
 - 더미 payload로 `POST /api/runs` → `GET /r/{runId}` 파이프라인 end-to-end 검증 완료 (HTTP 200, PASSED 배지/케이스 내용 정상 렌더링)
 
 
+
 ### 4. GitHub 로그인 + 개인 대시보드 완료 (2026-07-07)
 - Supabase Auth GitHub OAuth 연동, `/login` → `/auth/callback` → `/dashboard` 플로우 구현
 - `/dashboard`에서 개인 API 토큰 발급/재발급 후 `PROMPTCI_TOKEN`으로 사용 → `promptci run --upload` 결과가 계정에 연결되어 목록에 표시됨
@@ -70,5 +71,16 @@
 - 대시보드에 Open Graph/Twitter 카드 메타데이터 추가 (외부 공유 링크 미리보기용)
 - README에 실제 `promptci run` 실행(정상/회귀 케이스)을 녹화한 터미널 데모(SVG) 삽입 — asciinema로 녹화 후 애니메이션 SVG로 변환
 - **GitHub Marketplace 등록 완료**: https://github.com/marketplace/actions/promptci-regression-check
-- 남은 GTM 항목: README/링크 공유용 Show HN 게시(초안 작성됨, 게시는 사용자 본인 계정으로 진행 필요)
+- 커뮤니티 게시: r/LocalLLM 게시 완료 (https://www.reddit.com/r/LocalLLM/comments/1utee3o/), GeekNews Show GN 게시 완료
+- Show HN은 신규 계정 제한으로 보류 (가입 후 1주일 경과 시점인 2026-07-20 전후 재시도 예정)
+
+### 7. GTM 반응 모니터링 시작 (2026-07-11 기준 베이스라인)
+지금은 실사용자 反응이 아직 없는 상태 — 아래 숫자를 베이스라인으로 기록해두고, 이후 커뮤니티 게시 반응에 따라 늘어나는지 주기적으로 확인한다. "회사/팀원들이 같이 쓸 수 없냐"는 요청이 실제로 들어오면 그때 B2B(Org/Team/Stripe) 착수 — 수요 검증 전 선제 투자는 하지 않기로 결정.
+
+| 지표 | 2026-07-11 |
+|---|---|
+| GitHub stars (전체 3개 repo) | 0 |
+| npm 주간 다운로드 (`@kibin28-glitch/promptci`) | 5 (대부분 자체 테스트 설치로 추정) |
+
+다음 확인 시점: 커뮤니티 게시물에 반응 오거나, 사용자가 확인 요청할 때.
 
