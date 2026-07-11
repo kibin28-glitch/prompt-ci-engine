@@ -1,1 +1,1 @@
-Say a friendly greeting to {{name}} in one sentence.
+Say a generic friendly greeting without using any names, in one sentence.
