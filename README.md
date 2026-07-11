@@ -2,6 +2,8 @@
 
 Regression testing for your LLM prompts. When you change a prompt or swap models, `promptci` runs your saved test cases against a baseline and tells you if quality regressed — in your terminal, before it ships.
 
+![promptci catching a regression](docs/assets/demo.svg)
+
 ## Install
 
 ```bash
