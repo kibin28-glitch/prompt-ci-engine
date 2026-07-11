@@ -50,10 +50,25 @@
 - 같은 환경변수 2개를 Vercel 프로젝트(Production)에도 등록 후 재배포 완료
 - 더미 payload로 `POST /api/runs` → `GET /r/{runId}` 파이프라인 end-to-end 검증 완료 (HTTP 200, PASSED 배지/케이스 내용 정상 렌더링)
 
+
 ### 4. GitHub 로그인 + 개인 대시보드 완료 (2026-07-07)
 - Supabase Auth GitHub OAuth 연동, `/login` → `/auth/callback` → `/dashboard` 플로우 구현
 - `/dashboard`에서 개인 API 토큰 발급/재발급 후 `PROMPTCI_TOKEN`으로 사용 → `promptci run --upload` 결과가 계정에 연결되어 목록에 표시됨
 - 기존 익명 업로드(`/r/{runId}` 공유 링크)는 그대로 유지 (토큰 미등록 시 `user_id`는 null)
 - 스펙: `prompt-ci-dashboard/docs/superpowers/specs/2026-07-07-github-login-dashboard-design.md`
 - 실제 GitHub 로그인 → 토큰 발급 → `promptci run --upload` → 대시보드에 run 표시까지 end-to-end 검증 완료
+
+### 5. GitHub Actions 연동 완료 (2026-07-07)
+- `promptci-action` (composite action, `kibin28-glitch/promptci-action@v1`): PR마다 자동 회귀테스트 실행, 결과를 PR 코멘트로 등록/갱신(마커 기반 upsert), 회귀 시 체크 실패
+- 실제 PR 2개(pass/fail)로 end-to-end 검증 완료, 그 과정에서 발견한 실버그 2건(npx self-name collision, GraphQL/REST 댓글 ID 불일치) 원인 규명 후 수정
+- 스펙/계획: `docs/superpowers/specs/2026-07-07-github-action-design.md`, `docs/superpowers/plans/2026-07-07-github-action.md`
+
+### 6. GTM 1단계: GitHub Marketplace 등록 완료 (2026-07-11)
+- `promptci-action`, `prompt-ci-engine`에 누락돼 있던 MIT LICENSE 파일 추가
+- `action.yml`에 마켓플레이스 브랜딩(`icon`/`color`) 추가, 마켓플레이스 이름 충돌("promptci"가 기존 액션/이름과 겹침) → `PromptCI Regression Check`로 변경해 해결
+- 3개 저장소에 GitHub topics 등록 (검색 노출용)
+- 대시보드에 Open Graph/Twitter 카드 메타데이터 추가 (외부 공유 링크 미리보기용)
+- README에 실제 `promptci run` 실행(정상/회귀 케이스)을 녹화한 터미널 데모(SVG) 삽입 — asciinema로 녹화 후 애니메이션 SVG로 변환
+- **GitHub Marketplace 등록 완료**: https://github.com/marketplace/actions/promptci-regression-check
+- 남은 GTM 항목: README/링크 공유용 Show HN 게시(초안 작성됨, 게시는 사용자 본인 계정으로 진행 필요)
 
